@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+
+    <springProfile name="dev">
+        <springProperty name="log.path" source="logging.path" defaultValue="/Users/maomao/Documents/workspace/codings/logs"/>
+    </springProfile>
+    <springProfile name="prod">
+        <springProperty name="log.path" source="logging.path" defaultValue="/home/logs/hsbc" />
+    </springProfile>
+    <springProfile name="ssl">
+        <springProperty name="log.path" source="logging.path" defaultValue="/home/logs/hsbc" />
+    </springProfile>
+    <springProfile name="test">
+        <springProperty name="log.path" source="logging.path" defaultValue="/home/logs/hsbc" />
+    </springProfile>
+
+    <property name="CONSOLE_LOG_PATTERN"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread]  %-5level %logger{36} : [%L]- [%X{requestId}] ====== %msg%n"/>
+
+
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <Pattern>${CONSOLE_LOG_PATTERN}</Pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <appender name="sysFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.path}/sys.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${log.path}/logzip/sys/sys.%d{yyyy-MM-dd}-%i.log.zip</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>100</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <Pattern>${CONSOLE_LOG_PATTERN}</Pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <appender name="infoFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.path}/info.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${log.path}/logzip/info/info.%d{yyyy-MM-dd}-%i.log.zip</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>100</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <Pattern>${CONSOLE_LOG_PATTERN}</Pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <appender name="errorFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.path}/error.log</file>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${log.path}/logzip/error/error.%d{yyyy-MM-dd}-%i.log.zip</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>100</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <Pattern>${CONSOLE_LOG_PATTERN}</Pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <root level="info">
+        <appender-ref ref="console"/>
+    </root>
+
+    <logger name="org.springframework" level="INFO" addtivity="false">
+        <appender-ref ref="sysFile"/>
+    </logger>
+
+    <logger name="com.hsbc" level="ERROR" addtivity="false">
+        <appender-ref ref="errorFile"/>
+    </logger>
+    <logger name="com.hsbc" level="INFO" addtivity="false">
+        <appender-ref ref="infoFile"/>
+    </logger>
+</configuration>

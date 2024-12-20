@@ -1,0 +1,31 @@
+probro:
+  version: 0.1.0
+
+server:
+  servlet:
+    context-path: /
+  tomcat:
+    uri-encoding: UTF-8
+    max-threads: 1000
+    min-spare-threads: 30
+
+spring:
+  profiles:
+    #active: prod
+    active: dev
+
+  application:
+    name: antifraud-front
+  jackson:
+    locale: zh_CN
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+
+debug: true
+logging:
+  level:
+    com.hsbc: debug
+    org.springframework.boot.autoconfigure: ERROR
+  config: classpath:logback-spring.xml
+  file:
+    path: ./antifraud_log
