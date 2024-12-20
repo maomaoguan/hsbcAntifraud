@@ -1,8 +1,8 @@
-package com.probro.service;
+package com.hsbc.service;
 
 import com.alibaba.fastjson.JSONObject;
-import com.probro.exception.AntifraudException;
-import com.probro.response.AntifraudResponse;
+import com.hsbc.exception.AntifraudException;
+import com.hsbc.response.AntifraudResponse;
 
 public interface AntifraudService {
     public AntifraudResponse process(JSONObject payload) throws AntifraudException;

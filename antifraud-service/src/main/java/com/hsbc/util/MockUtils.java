@@ -1,4 +1,4 @@
-package com.probro.util;
+package com.hsbc.util;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.RandomUtils;
@@ -7,10 +7,8 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.stereotype.Service;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.servlet.*;
 import javax.servlet.http.*;
 import java.io.*;
-import java.security.Principal;
 import java.util.*;
 
 @Service

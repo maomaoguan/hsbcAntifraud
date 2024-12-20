@@ -1,4 +1,4 @@
-package com.probro.constants;
+package com.hsbc.constants;
 
 /**
  * supported feature types

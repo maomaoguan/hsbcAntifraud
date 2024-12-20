@@ -2,9 +2,9 @@ package com.hsbc.web.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.probro.response.AntifraudResponse;
-import com.probro.service.AntifraudService;
-import com.probro.util.AntifraudUtil;
+import com.hsbc.response.AntifraudResponse;
+import com.hsbc.service.AntifraudService;
+import com.hsbc.util.AntifraudUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;

@@ -1,4 +1,4 @@
-package com.probro.util;
+package com.hsbc.util;
 
 import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.socket.ConnectionSocketFactory;

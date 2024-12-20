@@ -1,4 +1,4 @@
-package com.probro.exception;
+package com.hsbc.exception;
 
 public class AntifraudException extends Exception{
     private int code;
