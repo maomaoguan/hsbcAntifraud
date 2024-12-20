@@ -1,6 +1,6 @@
 package com.probro.exception;
 
-public class AntifraudException extends Throwable{
+public class AntifraudException extends Exception{
     private int code;
     private String message;
 
