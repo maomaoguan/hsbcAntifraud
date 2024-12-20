@@ -359,51 +359,7 @@
                     </nonFilteredFileExtensions>
                 </configuration>
             </plugin>
-
-
-            <!-- ProGuard混淆插件-->
-            <plugin>
-                <groupId>com.github.wvengen</groupId>
-                <artifactId>proguard-maven-plugin</artifactId>
-                <version>2.0.14</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>proguard</goal>
-                        </goals>
-                    </execution>
-                </executions>
-
-                <configuration>
-                    <!--                    <skip>true</skip>-->
-                    <!--指定配置文件-->
-                    <proguardInclude>${project.basedir}/src/main/resources/proguard.conf</proguardInclude>
-                    <obfuscate>true</obfuscate>
-
-                    <!-- 指定要处理的jar|war|zip包,默认${project.build.finalName}.jar; 插件默认是在package产生原始jar包后,对该jar包进行处理.-->
-                    <!--                    <injar>${project.build.finalName}.jar</injar>-->
-                    <!-- 不指定outjar：直接对原始名称的jar进行混淆, 同时在 target下产生一个 同名_proguard_base.jar , 这个文件为未混淆前的jar.-->
-                    <!-- 指定outjar：指定不同的混淆后的jar包名称(原始名称的jar不混淆)；在attach为true时不生效(attach本身就会多产生jar包)-->
-                    <!--                    <outjar>${project.build.finalName}.jar</outjar>-->
-                    <libs>
-                        <!-- 包括所需的主要 JAVA 库 -->
-                        <lib>${java.home}/lib/rt.jar</lib>
-                        <!-- 如有必要，包括加密 JAVA 库  -->
-                        <lib>${java.home}/lib/jce.jar</lib>
-                    </libs>
-                    <!--                    <inLibsFilter>!META-INF/**,!META-INF/versions/**</inLibsFilter>-->
-                    <outputDirectory>${project.basedir}/target</outputDirectory>
-                </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>net.sf.proguard</groupId>
-                        <artifactId>proguard-base</artifactId>
-                        <version>6.0.3</version>
-                        <scope>runtime</scope>
-                    </dependency>
-                </dependencies>
-            </plugin>
+        
         </plugins>
     </build>
 </project>
