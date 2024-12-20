@@ -6,7 +6,7 @@ package com.hsbc.constants;
 public enum CodeEnum {
     ILLEGAL_ARGUMENTS(-2, "illegalArguments"),
     SYSTEM_ERROR(-1, "systemError"),
-    SUCCESS(0, "passed"),
+    PASSED(0, "passed"),
     REJECTED(1, "rejected"),
     REJECTED_WITHACTIONS(2, "rejectedWithActions");;
 

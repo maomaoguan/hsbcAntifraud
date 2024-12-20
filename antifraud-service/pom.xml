@@ -359,7 +359,7 @@
                     </nonFilteredFileExtensions>
                 </configuration>
             </plugin>
-        
+
         </plugins>
     </build>
 </project>
