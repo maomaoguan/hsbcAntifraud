@@ -1,0 +1,7 @@
+{
+    "name": "xLargeAmountCnts",
+    "status" : "online",
+    "funcType": "count",
+    "fieldName": "fAmount",
+    "filter":"fAmount > 100"
+}

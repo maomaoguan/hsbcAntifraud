@@ -1,7 +1,7 @@
 {
     "scenario" : "scenario2",
-    "rule": "x2 == true && ((x4 + x5) > 1000) && x3 > 10",
-    "status" : "drafted",
+    "rule": "xAmounts > 5 && xIllegalLogins > 2",
+    "status" : "online",
     "actions": ""
 }
 
