@@ -35,7 +35,7 @@ public class DataServiceImpl implements DataService {
 
     @Override
     public void init() {
-        for (int i = 0; i < accountCnts; i++) {
+        for (int i = 1; i <= accountCnts; i++) {
             String accountName = accountPrefix + i;
 
             try {

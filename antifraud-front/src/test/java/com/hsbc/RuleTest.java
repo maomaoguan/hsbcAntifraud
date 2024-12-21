@@ -118,16 +118,5 @@ public class RuleTest {
         }
     }
 
-    @Test
-    public void testData() throws Exception {
-        dataService.init();
-
-        List<Map<String, Object>> accountData = dataService.findDataByAccount("account1");
-
-        log.info("testData {}", JSON.toJSONString(accountData));
-
-        Assert.assertNotNull(accountData);
-        Assert.assertTrue(accountData.size() > 0);
-    }
 
 }

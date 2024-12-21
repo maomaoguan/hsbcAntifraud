@@ -14,18 +14,18 @@ import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.test.context.junit4.SpringRunner;
-//
-//@RunWith(SpringRunner.class)
-//@SpringBootTest
+
+
+@RunWith(SpringRunner.class)
+@SpringBootTest
 @Slf4j
-//@Configuration
+@Configuration
 //@SpringBootApplication(exclude = DataSourceAutoConfiguration.class) //去掉数据源
-//@ComponentScan(basePackages = {"com.hsbc", "com.hsbc.front"})
-//@ImportResource(locations = {"classpath*:src/main/resources/spring.xml"})
-//@PropertySource(value = {"classpath:app.properties"})
+@ComponentScan(basePackages = {"com.hsbc", "com.hsbc.front"})
+@ImportResource(locations = {"classpath*:src/main/resources/spring.xml"})
 public class EnviTest {
 
-    @Value("${antifraud.rules}")
+    @Value("${antifraud.ruleNames}")
     private String rules;
 
     @Test
