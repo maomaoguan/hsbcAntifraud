@@ -1,7 +1,7 @@
 package com.hsbc.util;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson2.JSONObject;
 import com.hsbc.constants.CodeEnum;
 import com.hsbc.response.AntifraudResponse;
 import lombok.extern.slf4j.Slf4j;
