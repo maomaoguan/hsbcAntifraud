@@ -29,3 +29,6 @@ logging:
   config: classpath:logback-spring.xml
   file:
     path: ./antifraud_log
+
+antifraud:
+  rules: rule1, rule2, rule3

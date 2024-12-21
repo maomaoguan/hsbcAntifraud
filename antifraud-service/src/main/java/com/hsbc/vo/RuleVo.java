@@ -18,6 +18,8 @@ public class RuleVo implements Serializable {
      */
     private String status;
 
+    private String scenarioId;
+
     /**
      * rule contents
      */
@@ -32,6 +34,14 @@ public class RuleVo implements Serializable {
     protected Timestamp gmtModified;
     protected String createdBy;
     protected String updatedBy;
+
+    public String getScenarioId() {
+        return scenarioId;
+    }
+
+    public void setScenarioId(String scenarioId) {
+        this.scenarioId = scenarioId;
+    }
 
     public String getName() {
         return name;

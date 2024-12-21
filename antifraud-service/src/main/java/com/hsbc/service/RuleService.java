@@ -10,6 +10,11 @@ import java.util.List;
  * giving all functionalities regarding rule management and executions
  */
 public interface RuleService {
+    /**
+     * rule engine initiations
+     */
+    public void init();
+
     public RuleVo findRuleByScenario(String scenarioId);
 
     public RuleResultVo execute(String scenarioId, List<FeatureResultVo> featureResults);

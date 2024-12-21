@@ -1,5 +1,6 @@
 {
-    "scenario" : "1",
+    "scenario" : "scenario1",
     "rule": "x1 < 5 && x2 == true",
+    "status" : "online",
     "actions": ""
 }

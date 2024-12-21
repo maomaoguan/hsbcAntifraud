@@ -1,6 +1,7 @@
 {
-    "scenario" : "2",
+    "scenario" : "scenario2",
     "rule": "x2 == true && ((x4 + x5) > 1000) && x3 > 10",
+    "status" : "drafted",
     "actions": ""
 }
 

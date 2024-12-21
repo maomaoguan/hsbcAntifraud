@@ -214,4 +214,14 @@ public class AntifraudUtil {
         return antifraudResponse;
     }
 
+    public static boolean isDay(long time) {
+        Date dateTime = new Date(time);
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(dateTime);
+
+        int hourOfDay = cal.get(Calendar.HOUR_OF_DAY);
+
+        return hourOfDay >= 8 && hourOfDay <= 23;
+    }
+
 }

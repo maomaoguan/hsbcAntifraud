@@ -1,0 +1,6 @@
+{
+    "scenario" : "scenario3",
+    "rule": "isDay(eventTime) && x3 > 10",
+    "status" : "online",
+    "actions": ""
+}

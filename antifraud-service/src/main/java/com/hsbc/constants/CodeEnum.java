@@ -8,7 +8,7 @@ public enum CodeEnum {
     SYSTEM_ERROR(-1, "systemError"),
     PASSED(0, "passed"),
     REJECTED(1, "rejected"),
-    REJECTED_WITHACTIONS(2, "rejectedWithActions");;
+    REJECTED_WITHACTIONS(2, "rejectedWithActions");
 
     private int code;
     private String message;
