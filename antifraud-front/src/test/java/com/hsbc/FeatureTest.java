@@ -1,9 +1,11 @@
 package com.hsbc;
 
 import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import com.hsbc.service.DataService;
 import com.hsbc.service.FeatureComputeService;
 import com.hsbc.service.FeatureService;
+import com.hsbc.vo.FeatureResultVo;
 import com.hsbc.vo.FeatureVo;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
@@ -62,10 +64,21 @@ public class FeatureTest {
         Assert.assertTrue(features.size() > 0);
     }
 
-
     @Test
     public void testFeatureCompute() throws Exception {
+        dataService.init();
         featureService.init();
 
+        JSONObject parameters = new JSONObject();
+        parameters.put("fAccountId", "account1");
+        FeatureVo featureVo = featureService.getFeatures().get("xAmounts");
+
+        FeatureResultVo resultVo = featureComputeService.compute(featureVo, parameters);
+
+        log.info("resultVo {}", JSON.toJSONString(resultVo));
+
+        Assert.assertNotNull(resultVo);
+        Assert.assertTrue(resultVo.getStatus() == 0);
+        Assert.assertTrue(resultVo.getValue() == 432);
     }
 }

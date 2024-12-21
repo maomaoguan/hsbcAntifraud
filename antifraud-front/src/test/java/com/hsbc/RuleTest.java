@@ -2,10 +2,16 @@ package com.hsbc;
 
 
 import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import com.hsbc.constants.StatusEnum;
 import com.hsbc.service.DataService;
+import com.hsbc.service.FeatureComputeService;
+import com.hsbc.service.FeatureService;
 import com.hsbc.service.RuleService;
 import com.hsbc.util.FileUtil;
+import com.hsbc.vo.FeatureResultVo;
+import com.hsbc.vo.FeatureVo;
+import com.hsbc.vo.RuleResultVo;
 import com.hsbc.vo.RuleVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -51,6 +57,11 @@ public class RuleTest {
     @Autowired
     private DataService dataService;
 
+    @Autowired
+    private FeatureService featureService;
+
+    @Autowired
+    private FeatureComputeService featureComputeService;
 
     @Test
     public void test1() {
@@ -74,49 +85,25 @@ public class RuleTest {
         Assert.assertEquals(ruleVo.getStatus(), StatusEnum.ONLINE.getStatus());
     }
 
-    private String genLine(Map<String, Object> featureParameters) {
-        StringBuilder builder = new StringBuilder();
-
-        int i = 0;
-        for (Map.Entry<String, Object> featureParameter : featureParameters.entrySet()) {
-            builder.append(featureParameter.getValue());
-
-            if (i < featureParameters.size() - 1) {
-                builder.append(',');
-            }
-
-            i++;
-        }
-
-        return builder.toString();
-    }
-
     @Test
-    public void testDataGen() throws Exception {
-        Map<String, Object> featureParameters = new HashMap<>();
+    public void testRule1() throws Exception {
+        dataService.init();
+        ruleService.init();
+        featureService.init();
 
-        featureParameters.put("fUserId", "43200601010002xxx");
-        featureParameters.put("fMobile", "1332123");
-        featureParameters.put("fAmount", 10);
-        featureParameters.put("fEventTime", System.currentTimeMillis());
-        featureParameters.put("fStatus", 0);
+        JSONObject parameters = new JSONObject();
+        parameters.put("fAccountId", "account1");
+        FeatureVo featureVo = featureService.getFeatures().get("xAmounts");
+        FeatureResultVo resultVo = featureComputeService.compute(featureVo, parameters);
 
-        for (int i = 0; i < 3; i++) {
-            featureParameters.put("fUserId", "43200601010002xxx" + RandomUtils.nextInt(0, 3));
+        List<FeatureResultVo> featureResults = new ArrayList<>();
+        featureResults.add(resultVo);
+        RuleResultVo ruleResultVo = ruleService.execute("scenario1", featureResults);
 
-            List<String> lines = new ArrayList<>();
+        log.info("testRule1 {}", JSON.toJSONString(ruleResultVo));
 
-            for (int j = 0; j < 100; j++) {
-                featureParameters.put("fAmount", RandomUtils.nextInt(0, 10));
-                featureParameters.put("fEventTime", System.currentTimeMillis());
-
-                String line = this.genLine(featureParameters);
-                lines.add(line);
-            }
-
-            FileUtils.writeLines(new File("/Users/maomao/Documents/workspace/data/antifraud/" + i), lines);
-        }
+        Assert.assertNotNull(ruleResultVo);
+        Assert.assertTrue(ruleResultVo.isHit());
     }
-
 
 }

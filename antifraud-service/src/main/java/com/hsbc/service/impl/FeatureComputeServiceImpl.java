@@ -1,6 +1,7 @@
 package com.hsbc.service.impl;
 
 import com.alibaba.fastjson2.JSONObject;
+import com.hsbc.constants.CodeEnum;
 import com.hsbc.constants.FuncEnum;
 import com.hsbc.exception.ComputeException;
 import com.hsbc.service.AviatorService;
@@ -30,13 +31,17 @@ public class FeatureComputeServiceImpl implements FeatureComputeService {
         String accountId = parameters.getString("fAccountId");
         List<Map<String, Object>> accountData = dataService.findDataByAccount(accountId);
 
+        if (accountData == null) {
+            throw new ComputeException(String.format("no data found for accountId %s", accountId), CodeEnum.SYSTEM_ERROR.getCode());
+        }
+
         int result = this.execute(featureVo, accountData);
 
         FeatureResultVo featureResultVo = new FeatureResultVo();
         featureResultVo.setFeatureName(featureVo.getName());
         featureResultVo.setStatus(0);
         featureResultVo.setValue(result);
-        
+
         return featureResultVo;
     }
 

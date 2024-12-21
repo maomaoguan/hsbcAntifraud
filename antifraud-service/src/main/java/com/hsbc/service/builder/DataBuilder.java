@@ -33,7 +33,7 @@ public class DataBuilder {
             Map<String, Object> lineBuilt = new HashMap<>();
             linesBuilt.add(lineBuilt);
             for (int j = 0; j < lineTokens.length; j++) {
-                lineBuilt.put(fieldNameTokens[j], lineTokens[j]);
+                lineBuilt.put(StringUtils.trim(fieldNameTokens[j]), StringUtils.trim(lineTokens[j]));
             }
         }
 

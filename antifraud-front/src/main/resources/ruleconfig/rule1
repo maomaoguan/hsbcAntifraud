@@ -1,6 +1,6 @@
 {
     "scenario" : "scenario1",
-    "rule": "x1 < 5 && x2 == true",
+    "rule": "xAmounts > 5",
     "status" : "online",
     "actions": ""
 }

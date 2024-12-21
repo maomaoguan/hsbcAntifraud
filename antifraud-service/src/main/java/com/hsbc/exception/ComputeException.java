@@ -12,6 +12,13 @@ public class ComputeException extends Exception {
         this.code = code;
     }
 
+
+    public ComputeException(String message, int code) {
+        this.message = message;
+        this.code = code;
+    }
+
+
     public int getCode() {
         return code;
     }

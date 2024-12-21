@@ -224,4 +224,21 @@ public class AntifraudUtil {
         return hourOfDay >= 8 && hourOfDay <= 23;
     }
 
+    public String genLine(Map<String, Object> featureParameters) {
+        StringBuilder builder = new StringBuilder();
+
+        int i = 0;
+        for (Map.Entry<String, Object> featureParameter : featureParameters.entrySet()) {
+            builder.append(featureParameter.getValue());
+
+            if (i < featureParameters.size() - 1) {
+                builder.append(',');
+            }
+
+            i++;
+        }
+
+        return builder.toString();
+    }
+
 }

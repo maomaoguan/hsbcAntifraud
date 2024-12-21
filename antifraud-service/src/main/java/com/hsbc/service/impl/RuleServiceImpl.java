@@ -1,5 +1,6 @@
 package com.hsbc.service.impl;
 
+import com.hsbc.service.AviatorService;
 import com.hsbc.service.FeatureService;
 import com.hsbc.service.RuleService;
 import com.hsbc.service.builder.RuleBuilder;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -34,6 +36,9 @@ public class RuleServiceImpl implements RuleService {
 
     @Autowired
     private FeatureService featureService;
+
+    @Autowired
+    private AviatorService aviatorService;
 
     @Override
     public void init() {
@@ -56,6 +61,17 @@ public class RuleServiceImpl implements RuleService {
 
     @Override
     public RuleResultVo execute(String scenarioId, List<FeatureResultVo> featureResults) {
-        return null;
+        RuleVo ruleVo = this.rules.get(scenarioId);
+
+        Map<String, Object> requestObject = new HashMap<>();
+        for (FeatureResultVo featureResultVo : featureResults) {
+            requestObject.put(featureResultVo.getFeatureName(), featureResultVo.getValue());
+        }
+
+        Boolean isHit = aviatorService.evaluate(requestObject, ruleVo.getRule());
+        RuleResultVo ruleResultVo = new RuleResultVo();
+        ruleResultVo.setHit(isHit);
+
+        return ruleResultVo;
     }
 }
