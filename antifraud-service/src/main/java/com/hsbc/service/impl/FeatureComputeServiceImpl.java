@@ -12,10 +12,13 @@ import com.hsbc.vo.FeatureVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.*;
 
 @Service
 @Slf4j
@@ -25,6 +28,21 @@ public class FeatureComputeServiceImpl implements FeatureComputeService {
 
     @Autowired
     private AviatorService aviatorService;
+    @Value("${antifraud.coreSize}")
+    private int coreSize = 16;
+    @Value("${antifraud.maxSize}")
+    private int maxSize = 128;
+
+    /**
+     * keeping global threadpool for maximum the ability of parallel computing
+     */
+    private final ExecutorService basicThreadPool = new ThreadPoolExecutor(coreSize, maxSize, 800L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(256), new ThreadFactory() {
+        @Override
+        public Thread newThread(Runnable r) {
+            return new Thread(r, "FEATURESERVICE-" + r.hashCode());
+        }
+    }, new FeatureRejectedExecutionHandler());
+
 
     @Override
     public FeatureResultVo compute(FeatureVo featureVo, JSONObject parameters) throws ComputeException {
@@ -43,6 +61,32 @@ public class FeatureComputeServiceImpl implements FeatureComputeService {
         featureResultVo.setValue(result);
 
         return featureResultVo;
+    }
+
+    @Override
+    public List<FeatureResultVo> compute(List<FeatureVo> featureVos, JSONObject parameters) throws ComputeException {
+        CompletionService completionService = new ExecutorCompletionService(this.basicThreadPool);
+        List<FeatureResultVo> featureResultVos = new ArrayList<>();
+        for (FeatureVo featureVo : featureVos) {
+            completionService.submit(new Callable<FeatureResultVo>() {
+                @Override
+                public FeatureResultVo call() throws Exception {
+                    return compute(featureVo, parameters);
+                }
+            });
+        }
+
+        for (int i = 0; i < featureVos.size(); i++) {
+            try {
+                featureResultVos.add((FeatureResultVo) completionService.poll().get());
+            } catch (Exception ex) {
+                /**
+                 * intentionally ignore here, since get no responding thread
+                 */
+            }
+        }
+
+        return featureResultVos;
     }
 
     private int execute(FeatureVo featureVo, List<Map<String, Object>> accountData) {
@@ -84,6 +128,14 @@ public class FeatureComputeServiceImpl implements FeatureComputeService {
             return sum;
         } else {
             return 0;
+        }
+    }
+
+
+    private class FeatureRejectedExecutionHandler implements RejectedExecutionHandler {
+        @Override
+        public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
+            log.warn("[featureservice.queryFeatures.reject2] fatal, thread {} is rejected ", r.toString());
         }
     }
 }

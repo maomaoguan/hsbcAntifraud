@@ -34,3 +34,5 @@ antifraud:
   ruleNames: rule1, rule2, rule3
   featureNames: xAmounts, xIllegalLogins
   accounts: 10
+  coreSize: 16
+  maxSize: 128
