@@ -23,8 +23,10 @@ public class AntifraudServiceImpl implements AntifraudService {
     @Autowired
     private FeatureService featureService;
 
+    @Autowired
     private DataService dataService;
 
+    @Autowired
     private AviatorService aviatorService;
 
     @Override

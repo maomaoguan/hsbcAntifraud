@@ -32,6 +32,8 @@ public class AntifraudTest {
 
     @Test
     public void testScenario3() throws Exception {
+        antifraudService.init();
+
         JSONObject parameters = new JSONObject();
         parameters.put("fAccountId", "account2");
         parameters.put("scenarioId", "scenario3");
