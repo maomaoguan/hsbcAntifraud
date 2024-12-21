@@ -39,10 +39,10 @@ public class DataServiceImpl implements DataService {
             String accountName = accountPrefix + i;
 
             try {
-                List<String> lines = fileUtil.loadLines(dataConfigPrefix + i);
+                List<String> lines = fileUtil.loadLines(dataConfigPrefix + accountName);
                 accountData.put(accountName, dataBuilder.buildData(lines));
             } catch (Exception ex) {
-                log.error("[dataService] unable to init account data {}", accountName, ex);
+                log.warn("[dataService] unable to init account data {}", accountName, ex);
             }
         }
     }
