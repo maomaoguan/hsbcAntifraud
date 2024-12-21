@@ -15,5 +15,5 @@ public interface AviatorService {
 
     public Map<String, AbstractFunction> getAvailableFunctions();
 
-    public Object evaluate(Map<String, Object> requestObject, String elExpression) throws Exception;
+    public Boolean evaluate(Map<String, Object> requestObject, String elExpression);
 }

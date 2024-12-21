@@ -1,12 +1,11 @@
 package com.hsbc.service.impl;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import com.hsbc.service.FeatureService;
 import com.hsbc.service.builder.FeatureBuilder;
 import com.hsbc.util.FileUtil;
 import com.hsbc.vo.FeatureResultVo;
 import com.hsbc.vo.FeatureVo;
-import com.hsbc.vo.RuleVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,9 +48,12 @@ public class FeatureServiceImpl implements FeatureService {
 
     @Override
     public List<FeatureResultVo> execute(List<FeatureVo> features, JSONObject parameters) {
+
         return null;
+
     }
 
+    @Override
     public Map<String, FeatureVo> getFeatures() {
         return features;
     }

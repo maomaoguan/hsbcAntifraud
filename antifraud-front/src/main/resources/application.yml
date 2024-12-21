@@ -33,3 +33,4 @@ logging:
 antifraud:
   rules: rule1, rule2, rule3
   featureNames: xAmount, xLegalLogins
+  accounts: 10

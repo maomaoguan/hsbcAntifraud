@@ -47,8 +47,6 @@ public class RuleServiceImpl implements RuleService {
                 log.error("[ruleService] unable to init rule {}", ruleToken, ex);
             }
         }
-
-        featureService.init();
     }
 
     @Override

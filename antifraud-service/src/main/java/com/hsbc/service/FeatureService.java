@@ -1,7 +1,7 @@
 package com.hsbc.service;
 
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import com.hsbc.vo.FeatureResultVo;
 import com.hsbc.vo.FeatureVo;
 

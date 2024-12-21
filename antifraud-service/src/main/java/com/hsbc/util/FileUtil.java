@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class FileUtil {
@@ -34,5 +36,19 @@ public class FileUtil {
         fileContent = out.toString();
 
         return fileContent;
+    }
+
+
+    public List<String> loadLines(String resourceName) throws Exception {
+        InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(resourceName);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+
+        List<String> lines = new ArrayList();
+        String read = "";
+        while ((read = reader.readLine()) != null) {
+            lines.add(read);
+        }
+
+        return lines;
     }
 }

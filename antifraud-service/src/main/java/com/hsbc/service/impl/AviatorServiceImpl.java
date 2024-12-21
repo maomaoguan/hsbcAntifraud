@@ -35,7 +35,7 @@ public class AviatorServiceImpl implements AviatorService {
         return expression.getVariableNames();
     }
 
-    public Object evaluate(Map<String, Object> requestObject, String elExpression) throws Exception {
+    public Boolean evaluate(Map<String, Object> requestObject, String elExpression) {
         Expression expression = AviatorEvaluator.compile(elExpression, true);
 
         /**
@@ -44,12 +44,16 @@ public class AviatorServiceImpl implements AviatorService {
         List<String> variableNames = expression.getVariableNames();
         for (String variableName : variableNames) {
             if (!requestObject.containsKey(variableName)) {
-                throw new Exception(String.format("variable required in expression not exist, variable %s, expression %s", variableName, elExpression));
+                return false;
             }
         }
 
         Object result = expression.execute(requestObject);
 
-        return result;
+        if (result != null && Boolean.class.isAssignableFrom(result.getClass())) {
+            return (Boolean) result;
+        }
+
+        return false;
     }
 }

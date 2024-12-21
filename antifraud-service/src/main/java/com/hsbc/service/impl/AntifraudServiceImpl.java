@@ -1,6 +1,6 @@
 package com.hsbc.service.impl;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import com.hsbc.constants.CodeEnum;
 import com.hsbc.exception.AntifraudException;
 import com.hsbc.response.AntifraudResponse;
