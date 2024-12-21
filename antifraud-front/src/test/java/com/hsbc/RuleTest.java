@@ -98,7 +98,7 @@ public class RuleTest {
 
         List<FeatureResultVo> featureResults = new ArrayList<>();
         featureResults.add(resultVo);
-        RuleResultVo ruleResultVo = ruleService.execute("scenario1", featureResults);
+        RuleResultVo ruleResultVo = ruleService.execute("scenario1", featureResults, parameters);
 
         log.info("testRule1 {}", JSON.toJSONString(ruleResultVo));
 
@@ -106,4 +106,19 @@ public class RuleTest {
         Assert.assertTrue(ruleResultVo.isHit());
     }
 
+
+    @Test
+    public void testRule3() throws Exception {
+        dataService.init();
+        ruleService.init();
+        featureService.init();
+
+        JSONObject parameters = new JSONObject();
+        parameters.put("fAccountId", "account1");
+        RuleVo ruleVo = ruleService.findRuleByScenario("scenario3");
+
+        log.info("testRule3 {}", JSON.toJSONString(ruleVo));
+
+        Assert.assertNotNull(ruleVo);
+    }
 }

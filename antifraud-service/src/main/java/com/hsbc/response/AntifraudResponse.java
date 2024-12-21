@@ -9,7 +9,7 @@ import java.io.Serializable;
  */
 public class AntifraudResponse implements Serializable {
     private int code;
-    private JSONObject details;
+    private String details;
 
     public int getCode() {
         return code;
@@ -19,11 +19,11 @@ public class AntifraudResponse implements Serializable {
         this.code = code;
     }
 
-    public JSONObject getDetails() {
+    public String getDetails() {
         return details;
     }
 
-    public void setDetails(JSONObject details) {
+    public void setDetails(String details) {
         this.details = details;
     }
 }

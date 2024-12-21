@@ -1,5 +1,6 @@
 package com.hsbc.service;
 
+import com.alibaba.fastjson2.JSONObject;
 import com.hsbc.vo.FeatureResultVo;
 import com.hsbc.vo.RuleResultVo;
 import com.hsbc.vo.RuleVo;
@@ -17,5 +18,5 @@ public interface RuleService {
 
     public RuleVo findRuleByScenario(String scenarioId);
 
-    public RuleResultVo execute(String scenarioId, List<FeatureResultVo> featureResults);
+    public RuleResultVo execute(String scenarioId, List<FeatureResultVo> featureResults, JSONObject parameters);
 }

@@ -6,8 +6,12 @@ import com.hsbc.service.AviatorService;
 import com.hsbc.util.AntifraudUtil;
 import com.hsbc.vo.RuleVo;
 import lombok.extern.slf4j.Slf4j;
+import net.logstash.logback.encoder.org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -30,12 +34,12 @@ public class RuleBuilder {
         ruleVo.setScenarioId(scenarioId);
         ruleVo.setRule(ruleJson.getString("rule"));
         ruleVo.setStatus(ruleJson.getString("status"));
+        ruleVo.setDisplayName(ruleJson.getString("displayName"));
 
         /**
          * TODO: parse features later
          */
 //        ruleVo.setFeatures();
-        aviatorService.findVariables(ruleJson.getString("rule"));
 
         return ruleVo;
     }

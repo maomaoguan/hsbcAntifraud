@@ -1,6 +1,7 @@
 {
     "scenario" : "scenario3",
-    "rule": "isNite(fEventTime) && xLargeAmountCnts > 3",
+    "displayName" : "suspicious night behavior with large amount of transactions",
+    "rule": "isNite(fEventTime) && xLargeAmountCnts > 3 && xIllegalLogins > 2",
     "status" : "online",
     "actions": ""
 }
