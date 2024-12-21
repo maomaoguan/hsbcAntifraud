@@ -1,6 +1,8 @@
 package com.hsbc.service.impl;
 
 import com.alibaba.fastjson2.JSONObject;
+import com.hsbc.constants.CodeEnum;
+import com.hsbc.service.FeatureComputeService;
 import com.hsbc.service.FeatureService;
 import com.hsbc.service.builder.FeatureBuilder;
 import com.hsbc.util.FileUtil;
@@ -12,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +35,9 @@ public class FeatureServiceImpl implements FeatureService {
     @Autowired
     private FeatureBuilder featureBuilder;
 
+    @Autowired
+    private FeatureComputeService featureComputeService;
+
     @Override
     public void init() {
         String[] featureTokens = StringUtils.split(featureNames, ",");
@@ -48,8 +54,19 @@ public class FeatureServiceImpl implements FeatureService {
 
     @Override
     public List<FeatureResultVo> execute(List<FeatureVo> features, JSONObject parameters) {
+        List<FeatureResultVo> featureResultVos = new ArrayList<>();
+        for (FeatureVo feature : features) {
+            try {
+                featureResultVos.add(featureComputeService.compute(feature, parameters));
+            } catch (Exception ex) {
+                FeatureResultVo featureResultVo = new FeatureResultVo();
+                featureResultVo.setStatus(CodeEnum.SYSTEM_ERROR.getCode());
 
-        return null;
+                featureResultVos.add(featureResultVo);
+            }
+        }
+
+        return featureResultVos;
 
     }
 
