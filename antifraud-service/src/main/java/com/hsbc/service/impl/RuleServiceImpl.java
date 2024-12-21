@@ -1,5 +1,6 @@
 package com.hsbc.service.impl;
 
+import com.hsbc.service.FeatureService;
 import com.hsbc.service.RuleService;
 import com.hsbc.service.builder.RuleBuilder;
 import com.hsbc.util.FileUtil;
@@ -18,10 +19,10 @@ import java.util.List;
 @Service
 @Slf4j
 public class RuleServiceImpl implements RuleService {
-    private HashMap<String, RuleVo> scenarioRules = new HashMap<>();
+    private HashMap<String, RuleVo> rules = new HashMap<>();
 
-    @Value("${antifraud.rules}")
-    private String rules;
+    @Value("${antifraud.ruleNames}")
+    private String ruleNames;
 
     private final String ruleConfPrefix = "ruleconfig/";
 
@@ -31,24 +32,28 @@ public class RuleServiceImpl implements RuleService {
     @Autowired
     private RuleBuilder ruleBuilder;
 
+    @Autowired
+    private FeatureService featureService;
+
     @Override
     public void init() {
-        String[] ruleTokens = StringUtils.split(rules, ",");
+        String[] ruleTokens = StringUtils.split(ruleNames, ",");
         for (String ruleToken : ruleTokens) {
             try {
                 String rawContent = fileUtil.loadFile(ruleConfPrefix + StringUtils.trim(ruleToken));
                 RuleVo ruleVo = ruleBuilder.buildRule(rawContent);
-                scenarioRules.put(ruleVo.getScenarioId(), ruleVo);
+                rules.put(ruleVo.getScenarioId(), ruleVo);
             } catch (Exception ex) {
                 log.error("[ruleService] unable to init rule {}", ruleToken, ex);
             }
         }
-    }
 
+        featureService.init();
+    }
 
     @Override
     public RuleVo findRuleByScenario(String scenarioId) {
-        return this.scenarioRules.get(scenarioId);
+        return this.rules.get(scenarioId);
     }
 
     @Override

@@ -1,0 +1,7 @@
+{
+    "name": "xIllegalLogins",
+    "status" : "online",
+    "funcType": "count",
+    "fieldName": "fStatus",
+    "filter":"fStatus == 1"
+}

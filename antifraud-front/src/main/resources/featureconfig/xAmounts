@@ -1,0 +1,7 @@
+{
+    "name": "xAmounts",
+    "status" : "online",
+    "funcType": "sum",
+    "fieldName": "fAmount",
+    "filter":""
+}
