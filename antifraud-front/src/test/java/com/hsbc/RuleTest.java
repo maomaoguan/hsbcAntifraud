@@ -3,6 +3,7 @@ package com.hsbc;
 
 import com.alibaba.fastjson2.JSON;
 import com.hsbc.constants.StatusEnum;
+import com.hsbc.service.DataService;
 import com.hsbc.service.RuleService;
 import com.hsbc.util.FileUtil;
 import com.hsbc.vo.RuleVo;
@@ -32,12 +33,11 @@ import java.util.Map;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@Slf4j
 @Configuration
+@Slf4j
 @SpringBootApplication(exclude = DataSourceAutoConfiguration.class) //去掉数据源
 @ComponentScan(basePackages = {"com.hsbc", "com.hsbc.web"})
 @ImportResource(locations = {"classpath*:src/main/resources/spring.xml"})
-@PropertySource(value = {"classpath:app.properties"})
 public class RuleTest {
 
     private static String VELOCITY_KEY = "amount";
@@ -47,6 +47,9 @@ public class RuleTest {
 
     @Autowired
     private RuleService ruleService;
+
+    @Autowired
+    private DataService dataService;
 
     @Value("${antifraud.rules}")
     private String rules;
@@ -116,7 +119,18 @@ public class RuleTest {
 
             FileUtils.writeLines(new File("/Users/maomao/Documents/workspace/data/antifraud/" + i), lines);
         }
+    }
 
+    @Test
+    public void testData() throws Exception {
+        dataService.init();
+
+        List<Map<String, Object>> accountData = dataService.findDataByAccount("account1");
+
+        Assert.assertNotNull(accountData);
+        Assert.assertTrue(accountData.size() > 0);
+
+        log.info("testData {}", JSON.toJSONString(accountData));
     }
 
 }

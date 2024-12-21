@@ -35,7 +35,6 @@ public class AntifraudController {
          */
         try {
             payloadConverted = antifraudUtil.acquirePayload(payload);
-
         } catch (Exception ex) {
             log.error("[antifraud.pre] failed {}", payload != null ? JSON.toJSONString(payload) : "", ex);
 
