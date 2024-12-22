@@ -42,9 +42,11 @@ public class DataServiceImpl implements DataService {
                 List<String> lines = fileUtil.loadLines(dataConfigPrefix + accountName);
                 accountData.put(accountName, dataBuilder.buildData(lines));
             } catch (Exception ex) {
-                log.warn("[dataService] unable to init account data {}", accountName, ex);
+                log.warn("[dataService] unable to init account data {}", accountName);
             }
         }
+
+        log.info("[dataService] data initiated in total {}", accountData.size());
     }
 
     @Override
