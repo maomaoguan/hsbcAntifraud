@@ -3,6 +3,7 @@ package com.hsbc.service;
 import com.alibaba.fastjson2.JSONObject;
 import com.hsbc.exception.AntifraudException;
 import com.hsbc.response.AntifraudResponse;
+import com.aliyun.mns.model.Message;
 
 public interface AntifraudService {
     /**
@@ -16,9 +17,12 @@ public interface AntifraudService {
      * 2. fAccountId is mandatory, which identifies the account that will be detected against
      * 3. other parameters will start with a f prefix,
      * which indicates it is a parameter that can be used in feature computes or rule computes, like fEventTime points to current executing time
+     *
      * @param payload
      * @return
      * @throws AntifraudException
      */
     public AntifraudResponse process(JSONObject payload) throws AntifraudException;
+
+    public AntifraudResponse process(Message payload) throws AntifraudException;
 }

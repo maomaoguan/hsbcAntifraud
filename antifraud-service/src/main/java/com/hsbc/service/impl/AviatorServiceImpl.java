@@ -13,17 +13,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * as a representation of expression invocations regarding aviator
+ */
 @Service
 @Slf4j
 public class AviatorServiceImpl implements AviatorService {
     private Map<String, AbstractFunction> availableFunctions = new HashMap<>();
 
+    @Override
     public void init() {
         availableFunctions.put("getDay", new GetDayFunction());
         availableFunctions.put("getHour", new GetHourFunction());
         availableFunctions.put("isWeekend", new IsWeekendFunction());
         availableFunctions.put("isDay", new IsDayFunction());
         availableFunctions.put("isNite", new IsNiteFunction());
+
+        for (Map.Entry<String, AbstractFunction> functionEntry : availableFunctions.entrySet()) {
+            AviatorEvaluator.addFunction(functionEntry.getValue());
+        }
     }
 
     public Map<String, AbstractFunction> getAvailableFunctions() {

@@ -2,6 +2,7 @@ package com.hsbc.util;
 
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
+import com.aliyun.mns.model.Message;
 import com.hsbc.constants.CodeEnum;
 import com.hsbc.response.AntifraudResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +45,29 @@ public class AntifraudUtil {
         return converted;
     }
 
+    public JSONObject buildPayload(Message message) throws Exception {
+        String messageBody = message.getMessageBody();
+
+        if (StringUtils.isBlank(messageBody)) {
+            throw new Exception("empty message");
+        }
+
+        if (!this.isJSONValid(messageBody)) {
+            throw new Exception("illegal message");
+        }
+
+        JSONObject payload = JSONObject.parseObject(messageBody);
+
+        if (StringUtils.isBlank(payload.getString("scenarioId"))) {
+            throw new Exception("illegal message - no scenarioId");
+        }
+
+        if (StringUtils.isBlank(payload.getString("fAccountId"))) {
+            throw new Exception("illegal message - no fAccountId");
+        }
+
+        return payload;
+    }
 
     public JSONArray convertJSONArray(String payload) {
         JSONArray jsonArray = new JSONArray();

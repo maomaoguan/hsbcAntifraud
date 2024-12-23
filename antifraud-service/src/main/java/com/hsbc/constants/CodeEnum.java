@@ -1,5 +1,7 @@
 package com.hsbc.constants;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * supported feature types
  */
@@ -8,7 +10,10 @@ public enum CodeEnum {
     SYSTEM_ERROR(-1, "systemError"),
     PASSED(0, "passed"),
     REJECTED(1, "rejected"),
-    REJECTED_WITHACTIONS(2, "rejectedWithActions");
+    SYSTEM_HEALTH(101, "healthy"),
+    REJECTED_WITHACTIONS(2, "rejectedWithActions"),
+    UNKNOWN(404, "unknown");
+
 
     private int code;
     private String message;
@@ -16,6 +21,16 @@ public enum CodeEnum {
     private CodeEnum(int code, String message) {
         this.code = code;
         this.message = message;
+    }
+
+    public static CodeEnum typeOf(int code) {
+        if (code == PASSED.getCode()) {
+            return PASSED;
+        } else if (code == REJECTED.getCode()) {
+            return REJECTED;
+        }
+
+        return UNKNOWN;
     }
 
     public int getCode() {

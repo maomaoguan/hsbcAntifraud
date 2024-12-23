@@ -1,10 +1,13 @@
 package com.hsbc.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson2.JSONObject;
+import com.aliyun.mns.model.Message;
 import com.hsbc.constants.CodeEnum;
 import com.hsbc.exception.AntifraudException;
 import com.hsbc.response.AntifraudResponse;
 import com.hsbc.service.*;
+import com.hsbc.util.AntifraudUtil;
 import com.hsbc.vo.FeatureResultVo;
 import com.hsbc.vo.RuleResultVo;
 import com.hsbc.vo.RuleVo;
@@ -28,6 +31,8 @@ public class AntifraudServiceImpl implements AntifraudService {
 
     @Autowired
     private AviatorService aviatorService;
+    @Autowired
+    private AntifraudUtil antifraudUtil;
 
     @Override
     public void init() {
@@ -43,6 +48,7 @@ public class AntifraudServiceImpl implements AntifraudService {
         String accountId = payload.getString("fAccountId");
         Long eventTime = payload.getLong("fEventTime");
 
+        long begTime = System.currentTimeMillis();
         RuleVo ruleVo = ruleService.findRuleByScenario(scenarioId);
 
         /**
@@ -50,22 +56,36 @@ public class AntifraudServiceImpl implements AntifraudService {
          */
         List<FeatureResultVo> featureResults = featureService.execute(ruleVo.getFeatures(), payload);
 
+        log.info("[antifraudService] featureResults {}", JSON.toJSONString(featureResults));
+
         /**
          * going through rule execution
          */
         RuleResultVo resultVo = ruleService.execute(scenarioId, featureResults, payload);
 
-        /**
-         * fraud detected, giving feedback and warnings accordingly
-         */
+        AntifraudResponse antifraudResponse = new AntifraudResponse();
+        antifraudResponse.setAccountId(accountId);
+        antifraudResponse.setCode(resultVo.isHit() ? CodeEnum.REJECTED.getCode() : CodeEnum.PASSED.getCode());
         if (resultVo.isHit()) {
-            log.info("[antifraud] fraud detected regarding account {} - hitting rule {}", accountId, ruleVo.getDisplayName());
+            antifraudResponse.setDetails(ruleVo.getDisplayName());
         }
 
-        AntifraudResponse antifraudResponse = new AntifraudResponse();
-        antifraudResponse.setCode(resultVo.isHit() ? CodeEnum.REJECTED.getCode() : CodeEnum.PASSED.getCode());
-        antifraudResponse.setDetails(ruleVo.getDisplayName());
+        long endTime = System.currentTimeMillis();
+        log.info("[antifraudService] succeed computing with cost - {}", endTime - begTime);
 
         return antifraudResponse;
+    }
+
+    @Override
+    public AntifraudResponse process(Message rawPayload) throws AntifraudException {
+        JSONObject payload = null;
+
+        try {
+            payload = antifraudUtil.buildPayload(rawPayload);
+        } catch (Exception ex) {
+            throw new AntifraudException(ex.getMessage(), CodeEnum.ILLEGAL_ARGUMENTS.getCode(), ex);
+        }
+
+        return this.process(payload);
     }
 }

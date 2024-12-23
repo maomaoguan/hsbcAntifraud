@@ -1,7 +1,0 @@
-{
-    "scenario" : "scenario1",
-    "displayName" : "suspicious amount of transactions",
-    "rule": "xAmounts > 5",
-    "status" : "online",
-    "actions": ""
-}

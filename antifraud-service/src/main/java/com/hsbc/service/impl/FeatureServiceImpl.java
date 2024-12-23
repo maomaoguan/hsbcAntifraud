@@ -1,5 +1,6 @@
 package com.hsbc.service.impl;
 
+import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.hsbc.constants.CodeEnum;
 import com.hsbc.service.FeatureComputeService;
@@ -55,16 +56,29 @@ public class FeatureServiceImpl implements FeatureService {
     @Override
     public List<FeatureResultVo> execute(List<FeatureVo> features, JSONObject parameters) {
         List<FeatureResultVo> featureResultVos = new ArrayList<>();
-        for (FeatureVo feature : features) {
-            try {
-                featureResultVos.add(featureComputeService.compute(feature, parameters));
-            } catch (Exception ex) {
-                FeatureResultVo featureResultVo = new FeatureResultVo();
-                featureResultVo.setStatus(CodeEnum.SYSTEM_ERROR.getCode());
 
-                featureResultVos.add(featureResultVo);
-            }
+        try {
+            featureResultVos = featureComputeService.compute(features, parameters);
+        } catch (Exception ex) {
+            log.error("[featureService] failed compute features {}", JSON.toJSONString(features), ex);
+            FeatureResultVo featureResultVo = new FeatureResultVo();
+            featureResultVo.setStatus(CodeEnum.SYSTEM_ERROR.getCode());
+
+            featureResultVos.add(featureResultVo);
         }
+
+//
+//        for (FeatureVo feature : features) {
+//            try {
+//                featureResultVos.add(featureComputeService.compute(feature, parameters));
+//            } catch (Exception ex) {
+//                log.error("[featureService] failed compute feature {}", feature.getName(), ex);
+//                FeatureResultVo featureResultVo = new FeatureResultVo();
+//                featureResultVo.setStatus(CodeEnum.SYSTEM_ERROR.getCode());
+//
+//                featureResultVos.add(featureResultVo);
+//            }
+//        }
 
         return featureResultVos;
 
