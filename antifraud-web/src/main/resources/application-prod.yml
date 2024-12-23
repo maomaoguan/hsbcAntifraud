@@ -1,0 +1,12 @@
+# hsbc antifraud
+antifraud:
+  version: 0.1.0
+
+server:
+  port: 8080
+
+spring:
+
+app:
+  isDebug: 1
+

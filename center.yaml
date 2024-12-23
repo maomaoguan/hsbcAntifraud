@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: antifraud-web-${envactive}
+  namespace: ${namespace}
+spec:
+  replicas: ${replicas}
+  minReadySeconds: 80
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: antifraud-web-${envactive}
+  template:
+    metadata:
+      labels:
+        app: antifraud-web-${envactive}
+    spec:
+      containers:
+        - name: antifraud-web-${envactive}
+          imagePullPolicy: Always
+          image: ${IMAGE}
+
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  namespace: ${namespace}
+  name: antifraud-web-${envactive}
+spec:
+  selector:
+    app: antifraud-web-${envactive}
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080

@@ -1,0 +1,45 @@
+probro:
+  version: 0.1.0
+
+server:
+  servlet:
+    context-path: /
+  tomcat:
+    uri-encoding: UTF-8
+    max-threads: 1000
+    min-spare-threads: 30
+
+spring:
+  profiles:
+    #active: prod
+    active: dev
+
+  application:
+    name: antifraud-web
+  jackson:
+    locale: zh_CN
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+
+debug: true
+logging:
+  level:
+    com.hsbc: debug
+    org.springframework.boot.autoconfigure: ERROR
+  config: classpath:logback-spring.xml
+  file:
+    path: ./antifraud_log
+
+antifraud:
+  ruleNames: rule1, rule2, rule3
+  featureNames: xAmounts, xIllegalLogins, xLargeAmountCnts
+  accounts: 5
+  coreSize: 16
+  maxSize: 128
+  endpoint: http://1712034974828389.mns.cn-hangzhou.aliyuncs.com
+  queueName: antifraud
+  accessKey: jhrpkZWwB07OOcIODDJJCULUbmD15N
+  accessId: LTAI5t5rXruySp3XJaSNo5ng
+  periodThreshold: 32
+  consumers: 2
+  consumerMax: 8

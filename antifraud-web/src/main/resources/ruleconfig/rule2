@@ -1,0 +1,9 @@
+{
+    "scenario" : "scenario2",
+    "displayName" : "suspicious logins",
+    "rule": "xAmounts > 5 && xIllegalLogins > 2",
+    "status" : "online",
+    "actions": ""
+}
+
+
