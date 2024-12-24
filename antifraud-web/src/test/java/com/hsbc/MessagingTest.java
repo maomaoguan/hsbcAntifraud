@@ -5,7 +5,8 @@ import com.aliyun.mns.client.CloudAccount;
 import com.aliyun.mns.client.CloudQueue;
 import com.aliyun.mns.client.MNSClient;
 import com.aliyun.mns.model.Message;
-import com.hsbc.util.MockUtil;
+import com.hsbc.service.MqService;
+import com.hsbc.util.MockUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,6 +18,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.List;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Slf4j
@@ -26,20 +31,16 @@ import org.springframework.test.context.junit4.SpringRunner;
 @ImportResource(locations = {"classpath*:src/main/resources/spring.xml"})
 public class MessagingTest {
 
-    @Value("${antifraud.endpoint}")
-    private String endpoint;
 
     @Value("${antifraud.queueName}")
     private String queueName;
 
-    @Value("${antifraud.accessKey}")
-    private String accessKey;
-
-    @Value("${antifraud.accessId}")
-    private String accessId;
+    @Autowired
+    private MqService mqService;
 
     @Autowired
-    private MockUtil mockUtil;
+    private MockUtils mockUtil;
+
 
     private Message constructMessage(JSONObject payload) {
         Message message = new Message();
@@ -49,9 +50,7 @@ public class MessagingTest {
 
     @Test
     public void testSendingMsg() throws Exception {
-        CloudAccount account = new CloudAccount(accessId, accessKey, endpoint);
-
-        MNSClient mnsClient = account.getMNSClient();
+        MNSClient mnsClient = mqService.acquireMqClient();
 
         try {
             CloudQueue cloudQueue = mnsClient.getQueueRef(queueName);
@@ -69,11 +68,9 @@ public class MessagingTest {
     }
 
 
-//    @Test
+    //    @Test
     public void testReceivingMsg() throws Exception {
-        CloudAccount account = new CloudAccount(accessId, accessKey, endpoint);
-
-        MNSClient mnsClient = account.getMNSClient();
+        MNSClient mnsClient = mqService.acquireMqClient();
 
         try {
             CloudQueue cloudQueue = mnsClient.getQueueRef(queueName);

@@ -5,6 +5,7 @@ import com.alibaba.fastjson2.JSONObject;
 import com.aliyun.mns.model.Message;
 import com.hsbc.constants.CodeEnum;
 import com.hsbc.response.AntifraudResponse;
+import com.hsbc.vo.FeatureResultVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -156,28 +157,6 @@ public class AntifraudUtil {
         return inputList.toJSONString();
     }
 
-    public String generateScope(List<String> projects) {
-        StringBuilder scopes = new StringBuilder();
-
-        for (String project : projects) {
-            scopes.append(project);
-            scopes.append(",");
-        }
-
-        return scopes.toString();
-    }
-
-    public boolean isMultipleFeatures(String payload) {
-        JSONObject payloadJson = JSONObject.parseObject(payload);
-
-        if (payloadJson.getJSONObject("summary") != null) {
-            JSONObject output = payloadJson.getJSONObject("summary").getJSONObject("output");
-
-            return output != null && output.size() > 1;
-        }
-
-        return false;
-    }
 
     public String standardizeString(Object param) throws RuntimeException {
         String standardContent = "";
@@ -263,6 +242,19 @@ public class AntifraudUtil {
         }
 
         return builder.toString();
+    }
+
+    public String formatFeatureResults(List<FeatureResultVo> featureResults) {
+        StringBuilder formatted = new StringBuilder();
+
+        for (int i = 0; i < featureResults.size(); i++) {
+            String featureName = featureResults.get(i).getFeatureName();
+            String value = String.valueOf(featureResults.get(i).getValue());
+
+            formatted.append(String.format("%s: %s; ", featureName, value));
+        }
+
+        return formatted.toString();
     }
 
 }

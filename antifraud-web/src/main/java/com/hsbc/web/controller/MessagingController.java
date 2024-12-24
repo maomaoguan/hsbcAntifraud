@@ -9,6 +9,7 @@ import com.hsbc.constants.CodeEnum;
 import com.hsbc.exception.AntifraudException;
 import com.hsbc.response.AntifraudResponse;
 import com.hsbc.service.AntifraudService;
+import com.hsbc.service.MqService;
 import com.hsbc.service.impl.FeatureComputeServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import net.logstash.logback.encoder.org.apache.commons.lang.StringUtils;
@@ -36,22 +37,16 @@ public class MessagingController {
     @Autowired
     private AntifraudService antifraudService;
 
+    @Autowired
+    private MqService mqService;
+
     /**
      * overall switch which controls the up or down running of consumers
      */
     private final AtomicBoolean isReceiving = new AtomicBoolean(false);
 
-    @Value("${antifraud.endpoint}")
-    private String endpoint;
-
     @Value("${antifraud.queueName}")
     private String queueName;
-
-    @Value("${antifraud.accessKey}")
-    private String accessKey;
-
-    @Value("${antifraud.accessId}")
-    private String accessId;
 
     @Value("${antifraud.consumerMax}")
     private int consumerMax;
@@ -128,8 +123,6 @@ public class MessagingController {
             }
 
         }
-
-
     }
 
     private void fraudRecognizing(AntifraudResponse antifraudResponse) {
@@ -137,7 +130,7 @@ public class MessagingController {
          * fraud detected, giving feedback and warnings accordingly
          */
         if (CodeEnum.typeOf(antifraudResponse.getCode()) == CodeEnum.REJECTED) {
-            log.warn("[antifraud] fraud detected regarding account {} - hitting rule {}", antifraudResponse.getAccountId(), antifraudResponse.getDetails());
+            log.warn("[antifraud] FRAUD DETECTED!!! -  regarding account {} - hitting rule {}", antifraudResponse.getAccountId(), antifraudResponse.getDetails());
         }
     }
 
@@ -155,8 +148,7 @@ public class MessagingController {
 
         @Override
         public void run() {
-            CloudAccount account = new CloudAccount(accessId, accessKey, endpoint);
-            MNSClient mnsClient = account.getMNSClient();
+            MNSClient mnsClient = mqService.acquireMqClient();
 
             int currentPeriod = period;
             try {

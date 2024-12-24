@@ -24,9 +24,6 @@ public class HttpUtils {
         return HttpClients.custom().setConnectionManager(poolingmgr).build();
     }
 
-    /**
-     * 初始化pool
-     */
     public static void init() {
         X509HostnameVerifier hostnameVerifier = SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER;
         LayeredConnectionSocketFactory sslSocketFactory = new SSLConnectionSocketFactory(SSLContexts.createDefault(), hostnameVerifier);

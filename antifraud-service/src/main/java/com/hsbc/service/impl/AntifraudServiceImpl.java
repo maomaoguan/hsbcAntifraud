@@ -44,11 +44,12 @@ public class AntifraudServiceImpl implements AntifraudService {
 
     @Override
     public AntifraudResponse process(JSONObject payload) throws AntifraudException {
+        long begTime = System.currentTimeMillis();
+
         String scenarioId = payload.getString("scenarioId");
         String accountId = payload.getString("fAccountId");
         Long eventTime = payload.getLong("fEventTime");
 
-        long begTime = System.currentTimeMillis();
         RuleVo ruleVo = ruleService.findRuleByScenario(scenarioId);
 
         if (ruleVo == null) {
@@ -73,7 +74,10 @@ public class AntifraudServiceImpl implements AntifraudService {
         }
 
         long endTime = System.currentTimeMillis();
-        log.info("[antifraudService] succeed computing with cost - {}", endTime - begTime);
+        /**
+         * a simple log formed tracking of latency
+         */
+        log.info("[antifraudService] succeed with cost - {}", endTime - begTime);
 
         return antifraudResponse;
     }
@@ -82,7 +86,7 @@ public class AntifraudServiceImpl implements AntifraudService {
     public AntifraudResponse process(Message rawPayload) throws AntifraudException {
         JSONObject payload = null;
 
-        log.info("[antifraudService] payload {}", rawPayload.getMessageBody());
+//        log.info("[antifraudService] payload {}", rawPayload.getMessageBody());
 
         try {
             payload = antifraudUtil.buildPayload(rawPayload);

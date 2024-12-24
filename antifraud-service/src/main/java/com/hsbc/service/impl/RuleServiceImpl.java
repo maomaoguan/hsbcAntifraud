@@ -5,6 +5,7 @@ import com.hsbc.service.AviatorService;
 import com.hsbc.service.FeatureService;
 import com.hsbc.service.RuleService;
 import com.hsbc.service.builder.RuleBuilder;
+import com.hsbc.util.AntifraudUtil;
 import com.hsbc.util.FileUtil;
 import com.hsbc.vo.FeatureResultVo;
 import com.hsbc.vo.FeatureVo;
@@ -33,6 +34,9 @@ public class RuleServiceImpl implements RuleService {
 
     @Autowired
     private FileUtil fileUtil;
+
+    @Autowired
+    private AntifraudUtil antifraudUtil;
 
     @Autowired
     private RuleBuilder ruleBuilder;
@@ -96,6 +100,8 @@ public class RuleServiceImpl implements RuleService {
     @Override
     public RuleResultVo execute(String scenarioId, List<FeatureResultVo> featureResults, JSONObject parameters) {
         RuleVo ruleVo = this.rules.get(scenarioId);
+
+//        log.info("[ruleService] features {}", antifraudUtil.formatFeatureResults(featureResults));
 
         Map<String, Object> requestObject = prepareForAviator(featureResults, parameters);
 
