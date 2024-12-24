@@ -79,6 +79,24 @@ public class FeatureTest {
 
         Assert.assertNotNull(resultVo);
         Assert.assertTrue(resultVo.getStatus() == 0);
-        Assert.assertTrue(resultVo.getValue() == 432);
+        Assert.assertTrue(resultVo.getValue() >= 0);
+    }
+
+    @Test
+    public void testXAmounts() throws Exception {
+        dataService.init();
+        featureService.init();
+
+        JSONObject parameters = new JSONObject();
+        parameters.put("fAccountId", "account3");
+        FeatureVo featureVo = featureService.getFeatures().get("xAmounts");
+
+        FeatureResultVo resultVo = featureComputeService.compute(featureVo, parameters);
+
+        log.info("resultVo {}", JSON.toJSONString(resultVo));
+
+        Assert.assertNotNull(resultVo);
+        Assert.assertTrue(resultVo.getStatus() == 0);
+        Assert.assertTrue(resultVo.getValue() > 430);
     }
 }

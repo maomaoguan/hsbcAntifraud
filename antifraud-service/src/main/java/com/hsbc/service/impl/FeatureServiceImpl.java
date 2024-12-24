@@ -81,7 +81,6 @@ public class FeatureServiceImpl implements FeatureService {
 //        }
 
         return featureResultVos;
-
     }
 
     @Override

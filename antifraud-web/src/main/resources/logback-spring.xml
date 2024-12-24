@@ -29,8 +29,8 @@
         <file>${log.path}/sys.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>${log.path}/logzip/sys/sys.%d{yyyy-MM-dd}-%i.log.zip</fileNamePattern>
-            <maxFileSize>10MB</maxFileSize>
-            <maxHistory>100</maxHistory>
+            <maxFileSize>100MB</maxFileSize>
+            <maxHistory>50</maxHistory>
         </rollingPolicy>
         <encoder>
             <Pattern>${CONSOLE_LOG_PATTERN}</Pattern>
@@ -42,8 +42,8 @@
         <file>${log.path}/info.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>${log.path}/logzip/info/info.%d{yyyy-MM-dd}-%i.log.zip</fileNamePattern>
-            <maxFileSize>10MB</maxFileSize>
-            <maxHistory>100</maxHistory>
+            <maxFileSize>100MB</maxFileSize>
+            <maxHistory>50</maxHistory>
         </rollingPolicy>
         <encoder>
             <Pattern>${CONSOLE_LOG_PATTERN}</Pattern>
@@ -60,8 +60,8 @@
         </filter>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>${log.path}/logzip/error/error.%d{yyyy-MM-dd}-%i.log.zip</fileNamePattern>
-            <maxFileSize>10MB</maxFileSize>
-            <maxHistory>100</maxHistory>
+            <maxFileSize>100MB</maxFileSize>
+            <maxHistory>50</maxHistory>
         </rollingPolicy>
         <encoder>
             <Pattern>${CONSOLE_LOG_PATTERN}</Pattern>

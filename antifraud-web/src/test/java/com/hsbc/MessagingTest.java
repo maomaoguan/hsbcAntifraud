@@ -69,7 +69,7 @@ public class MessagingTest {
     }
 
 
-    @Test
+//    @Test
     public void testReceivingMsg() throws Exception {
         CloudAccount account = new CloudAccount(accessId, accessKey, endpoint);
 

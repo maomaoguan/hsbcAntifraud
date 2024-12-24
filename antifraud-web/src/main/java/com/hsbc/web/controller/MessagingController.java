@@ -76,20 +76,6 @@ public class MessagingController {
 
     @PostConstruct
     public void init() {
-        /**
-         * shall be initiated only once
-         */
-        if (basicThreadPool == null) {
-            synchronized (this.getClass()) {
-                basicThreadPool = new ThreadPoolExecutor(defaultCoreConsumers, consumerMax, 800L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(16), new ThreadFactory() {
-                    @Override
-                    public Thread newThread(Runnable r) {
-                        return new Thread(r, "MessagingController-" + r.hashCode());
-                    }
-                });
-            }
-        }
-
         antifraudService.init();
 
         /**
@@ -101,19 +87,7 @@ public class MessagingController {
     @GetMapping("/stop")
     public void stop(HttpServletRequest request) {
         this.isReceiving.set(false);
-
-        /**
-         * refresh threadpool and the threads regarding
-         */
-        synchronized (this.getClass()) {
-            basicThreadPool = new ThreadPoolExecutor(defaultCoreConsumers, consumerMax, 800L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(16), new ThreadFactory() {
-                @Override
-                public Thread newThread(Runnable r) {
-                    return new Thread(r, "MessagingController-" + r.hashCode());
-                }
-            });
-        }
-
+        this.basicThreadPool.shutdown();
         log.error("[messaging] consuming stopped");
     }
 
@@ -123,6 +97,39 @@ public class MessagingController {
         this.isReceiving.set(true);
 
         this.kickoff();
+    }
+
+    private void initiatePool() {
+        if (basicThreadPool == null) {
+            /**
+             * refresh threadpool and the threads regarding
+             */
+            synchronized (this.getClass()) {
+                basicThreadPool = new ThreadPoolExecutor(defaultCoreConsumers, consumerMax, 800L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(16), new ThreadFactory() {
+                    @Override
+                    public Thread newThread(Runnable r) {
+                        return new Thread(r, "MessagingController-" + r.hashCode());
+                    }
+                });
+            }
+        } else {
+            if (!basicThreadPool.isShutdown()) {
+                log.info("[messaging] shutting down previous pool");
+                basicThreadPool.shutdown();
+                basicThreadPool = null;
+                synchronized (this.getClass()) {
+                    basicThreadPool = new ThreadPoolExecutor(defaultCoreConsumers, consumerMax, 800L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(16), new ThreadFactory() {
+                        @Override
+                        public Thread newThread(Runnable r) {
+                            return new Thread(r, "MessagingController-" + r.hashCode());
+                        }
+                    });
+                }
+            }
+
+        }
+
+
     }
 
     private void fraudRecognizing(AntifraudResponse antifraudResponse) {
@@ -135,6 +142,8 @@ public class MessagingController {
     }
 
     private void kickoff() {
+        initiatePool();
+
         log.info("[messaging] starting... consumers {}", consumers);
 
         for (int i = 0; i < this.consumers; i++) {
@@ -169,6 +178,8 @@ public class MessagingController {
                             currentPeriod = periodThreshold;
                         }
 
+                        log.info("[messaging] sleeping {}", currentPeriod);
+
                         try {
                             Thread.sleep(currentPeriod * 1000);
                         } catch (Exception ex2) {
@@ -183,6 +194,10 @@ public class MessagingController {
                     if (message != null) {
                         try {
                             AntifraudResponse antifraudResponse = antifraudService.process(message);
+                            /**
+                             * successfully polling message
+                             */
+                            cloudQueue.deleteMessage(message.getReceiptHandle());
                             fraudRecognizing(antifraudResponse);
                         } catch (AntifraudException bizEx) {
                             log.error("[messaging] failed to process a message {} - details {}", bizEx.getCode(), bizEx.getMessage());
@@ -192,6 +207,25 @@ public class MessagingController {
                          * restore the period to suspend
                          */
                         currentPeriod = period;
+                    } else {
+                        /**
+                         * in a tier up way to add suspending time
+                         */
+                        currentPeriod *= period;
+
+                        if (currentPeriod > periodThreshold) {
+                            currentPeriod = periodThreshold;
+                        }
+
+                        log.info("[messaging] sleeping2 {}", currentPeriod);
+
+                        try {
+                            Thread.sleep(currentPeriod * 1000);
+                        } catch (Exception ex2) {
+                            /**
+                             * intentionally ignore
+                             */
+                        }
                     }
                 }
             } catch (Exception ex) {

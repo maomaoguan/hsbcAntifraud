@@ -51,12 +51,14 @@ public class AntifraudServiceImpl implements AntifraudService {
         long begTime = System.currentTimeMillis();
         RuleVo ruleVo = ruleService.findRuleByScenario(scenarioId);
 
+        if (ruleVo == null) {
+            throw new AntifraudException(CodeEnum.ILLEGAL_ARGUMENTS.getMessage(), CodeEnum.ILLEGAL_ARGUMENTS.getCode());
+        }
+
         /**
          * compute features in advance, in a paralleled way
          */
         List<FeatureResultVo> featureResults = featureService.execute(ruleVo.getFeatures(), payload);
-
-        log.info("[antifraudService] featureResults {}", JSON.toJSONString(featureResults));
 
         /**
          * going through rule execution
@@ -79,6 +81,8 @@ public class AntifraudServiceImpl implements AntifraudService {
     @Override
     public AntifraudResponse process(Message rawPayload) throws AntifraudException {
         JSONObject payload = null;
+
+        log.info("[antifraudService] payload {}", rawPayload.getMessageBody());
 
         try {
             payload = antifraudUtil.buildPayload(rawPayload);

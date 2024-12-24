@@ -8,6 +8,8 @@ import com.hsbc.response.AntifraudResponse;
 import com.hsbc.service.AntifraudService;
 import com.hsbc.service.FeatureService;
 import lombok.extern.slf4j.Slf4j;
+import org.assertj.core.api.Assertions;
+import org.assertj.core.api.ThrowableAssert;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -82,4 +84,49 @@ public class AntifraudTest {
         Assert.assertNotNull(antifraudResponse);
         Assert.assertEquals(CodeEnum.PASSED.getCode(), antifraudResponse.getCode());
     }
+
+
+    @Test
+    public void testDetectedScenario1() throws Exception {
+        antifraudService.init();
+
+        JSONObject parameters = new JSONObject();
+        parameters.put("fAccountId", "account3");
+        parameters.put("scenarioId", "scenario2");
+        parameters.put("fEventTime", System.currentTimeMillis());
+
+        AntifraudResponse antifraudResponse = antifraudService.process(parameters);
+
+        log.info("antifraudResponse {}", JSON.toJSONString(antifraudResponse));
+
+        Assert.assertNotNull(antifraudResponse);
+    }
+
+
+    /**
+     * assert throws with illegal args
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testAnomaly1() throws Exception {
+        antifraudService.init();
+
+        JSONObject parameters = new JSONObject();
+        parameters.put("fAccountId", "account3");
+//        parameters.put("scenarioId", "scenario2");
+        parameters.put("fEventTime", System.currentTimeMillis());
+
+        Assertions.assertThatThrownBy(new ThrowableAssert.ThrowingCallable() {
+            @Override
+            public void call() throws Throwable {
+                AntifraudResponse antifraudResponse = antifraudService.process(parameters);
+
+                log.info("antifraudResponse {}", JSON.toJSONString(antifraudResponse));
+
+            }
+        });
+    }
+
+
 }

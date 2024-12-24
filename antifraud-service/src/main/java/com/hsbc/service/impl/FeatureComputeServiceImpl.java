@@ -78,7 +78,7 @@ public class FeatureComputeServiceImpl implements FeatureComputeService {
 
         for (int i = 0; i < featureVos.size(); i++) {
             try {
-                featureResultVos.add((FeatureResultVo) completionService.poll().get());
+                featureResultVos.add((FeatureResultVo) completionService.take().get());
             } catch (Exception ex) {
                 /**
                  * intentionally ignore here, since get no responding thread
@@ -111,7 +111,7 @@ public class FeatureComputeServiceImpl implements FeatureComputeService {
                 cnt++;
             } else if (funcEnum == FuncEnum.SUM) {
                 try {
-                    Integer fieldVal = Integer.parseInt((String) dataRow.get(fieldName));
+                    Long fieldVal = (Long) dataRow.get(fieldName);
                     sum += fieldVal;
                 } catch (Exception ex) {
                     /**
