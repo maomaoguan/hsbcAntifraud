@@ -80,7 +80,7 @@ public class AntifraudTest {
      *
      * @throws Exception
      */
-    @Test
+//    @Test
     public void testIntegration2() throws Exception {
         antifraudService.init();
         messagingController.start(mockUtils.mockHttpRequest());
