@@ -1,4 +1,4 @@
-# hsbcAntifraud
+# hsbcAntifraud project
 
 used only for hsbc examination purpose
 
@@ -62,24 +62,6 @@ it is deployed on ali-cloud ack
  - the system also used https://devops.aliyun.com/ in a flow to deploy the deployable
 
 
-### access aliyun using following account 
-
-    -  using a subaccount to login ack env
-        + https://signin.aliyun.com/   choose to use subaccount login
-        + loginname and password is ->    interviewer@1712034974828389.onaliyun.com        ape@1234
-        + shall bind a mobile in order to login
-    -  login url -> csnew.console.aliyun.com
-    -  then shall able to login and see this screen below 
-    -  application nodes can be accessed through 工作负载>>无状态>>hsbc-antifraud-test 
-    -  hpa settngs are under 工作负载>>无状态>>hsbc-antifraud-test>>容器伸缩
-    -  mq using mns, can reach through following https://mns.console.aliyun.com/region/cn-hangzhou/queue/antifraud/detail
-    -  logs are under 运维管理>>日志中心>>应用日志, an example is shown below
-    
-
-![image](ackenv.png)    
-
-![image](logs.png)
-
 
 ## ops
 
@@ -102,6 +84,24 @@ in order to run this u need to have following criteria
 - maven 
 - springboot
 
+
+### access aliyun using following account
+
+    -  using a subaccount to login ack env
+        + https://signin.aliyun.com/   choose to use subaccount login
+        + loginname and password is ->    interviewer@1712034974828389.onaliyun.com        ape@1234
+        + shall bind a mobile in order to login
+    -  login url -> csnew.console.aliyun.com
+    -  then shall able to login and see this screen below 
+    -  application nodes can be accessed through 工作负载>>无状态>>hsbc-antifraud-test 
+    -  hpa settngs are under 工作负载>>无状态>>hsbc-antifraud-test>>容器伸缩
+    -  mq using mns, can reach through following https://mns.console.aliyun.com/region/cn-hangzhou/queue/antifraud/detail
+    -  logs are under 运维管理>>日志中心>>应用日志, an example is shown below
+
+
+![image](ackenv.png)
+
+![image](logs.png)
 
 
 ## assumptions
