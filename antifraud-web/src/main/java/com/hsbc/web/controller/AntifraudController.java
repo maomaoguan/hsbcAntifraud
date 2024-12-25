@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 /**
- * takes requests from antifraud traffic
+ * replaced with message controller as traffic controller, this one takes commands/ops
  */
 @RestController
 @RequestMapping("/antifraud")

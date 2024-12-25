@@ -21,6 +21,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * tests against all featureService functions
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Slf4j

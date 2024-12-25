@@ -48,32 +48,4 @@ public class EnviTest {
         log.info("rules {}", rules);
     }
 
-
-    @Test
-    public void testDataGen() throws Exception {
-        Map<String, Object> featureParameters = new HashMap<>();
-
-        featureParameters.put("fUserId", "43200601010002xxx");
-        featureParameters.put("fMobile", "1332123");
-        featureParameters.put("fAmount", 10);
-        featureParameters.put("fEventTime", System.currentTimeMillis());
-        featureParameters.put("fStatus", 0);
-
-        for (int i = 0; i < 3; i++) {
-            featureParameters.put("fUserId", "43200601010002xxx" + RandomUtils.nextInt(0, 3));
-
-            List<String> lines = new ArrayList<>();
-
-            for (int j = 0; j < 100; j++) {
-                featureParameters.put("fAmount", RandomUtils.nextInt(0, 10));
-                featureParameters.put("fEventTime", System.currentTimeMillis());
-
-                String line = antifraudUtil.genLine(featureParameters);
-                lines.add(line);
-            }
-
-            FileUtils.writeLines(new File("/Users/maomao/Documents/workspace/data/antifraud/" + i), lines);
-        }
-    }
-
 }

@@ -22,6 +22,9 @@ import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * as test to send/receive messages from target MQ
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Slf4j

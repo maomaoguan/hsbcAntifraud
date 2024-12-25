@@ -27,6 +27,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
+ * takes traffic
  * it is a message receiver that takes messaging as payload, which will be detected and giving antifraud feedback
  * it receives message and giving process in a continuous manner, will suspend if message is vacant for a period of time
  */
@@ -54,7 +55,7 @@ public class MessagingController {
     private int consumerMax;
 
     @Value("${antifraud.consumers}")
-    private int consumers;
+    private volatile int consumers;
 
     /**
      * controls the maximum period that each consumer thread shall suspend/sleep when there is no message
@@ -97,9 +98,33 @@ public class MessagingController {
     }
 
 
+    @GetMapping("/enlarge")
+    public void enlarge(HttpServletRequest request) {
+        if (StringUtils.isNotBlank(request.getHeader("consumers"))) {
+            try {
+                Integer enlarged = Integer.parseInt(request.getHeader("consumers"));
+
+                log.warn("[messaging] enlarge consumers from {} to {}", consumers, enlarged);
+
+                synchronized (this.getClass()) {
+                    this.consumers = enlarged;
+                }
+
+                this.isReceiving.set(true);
+
+                this.kickoff();
+            } catch (Exception ex) {
+                log.error("[messaging] failed to enlarge ", ex);
+            }
+        }
+
+        this.kickoff();
+    }
+
+
     @GetMapping("/status")
     public String status(HttpServletRequest request) {
-        return String.valueOf(String.format("pool:%s; counts:%s", this.basicThreadPool.isShutdown(), this.threadsCounter.get()));
+        return String.valueOf(String.format("poolShutDown:%s; counts:%s; ", this.basicThreadPool.isShutdown(), this.threadsCounter.get()));
     }
 
     private void initiatePool() {

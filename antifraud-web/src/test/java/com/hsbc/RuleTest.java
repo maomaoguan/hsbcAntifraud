@@ -37,6 +37,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * tests against all ruleService functions
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Configuration

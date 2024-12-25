@@ -10,6 +10,16 @@ refers to ![image](featuresDescription.png)
 * A data, which simulates and mocks data which will be used for feature computation
 * support for antifraud detecting & message processing, which process messages/payloads and gives fraud alert & logs 
 
+## assumptions
+certain assumptions are taken as below to simply situation or give a default solution giving this examination purpose
+
+* assume that rule and scenario are single to single relationship
+* assume single rule enough to detect fraud, otherwise it will involve flow engine which is out of the scope of this exam
+* assume data which used in feature/variable computing can be mocked, otherwise db or other storage will be involved 
+* assume that minimal configurations to rules/features are involved, otherwise system need to be separated into two sub-sytems, 1 console for configuration and 2 running engine for execution
+* assume that feature computing can be simplified
+* assume that fraud notifications/alerts can be simplified through log
+* assume that traffic can be sent through either local env or a node
 
 ## arch & docs
 * logical arch regarding  ![image](hsbcAntifraudLogicArch.jpg)
@@ -66,6 +76,21 @@ it is deployed on ali-cloud ack
 ![image](ackenv.png)    
 
 ![image](logs.png)
+
+
+## ops
+
+### the message consuming can be monitored and controlled in following commands
+  - start curl localhost:8080/antifraud/start
+  - stop curl localhost:8080/antifraud/stop
+  - status (shows how many thread is running) curl localhost:8080/antifraud/status
+  - enlarge (when concurrent consumers are not enough, can enlarge on the fly) curl localhost:8080/antifraud/enlarge
+
+### latency can be analyzed only through log for now
+  - check info.log using   grep "cost" /home/logs/antifraud/info.log
+  - latency tracks is a cost stats which give milliseconds of the whole antifraud execution process
+
+![image](latency.png)
 
 
 ## dependencies

@@ -33,6 +33,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * integration tests against the whole anti-fraud flow
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Configuration
@@ -114,6 +117,11 @@ public class AntifraudTest {
         log.info("[testIntegration2] completed");
     }
 
+    /**
+     * scenario test against certain scenario like rule1, rule2
+     *
+     * @throws Exception
+     */
     @Test
     public void testScenario3() throws Exception {
         antifraudService.init();
