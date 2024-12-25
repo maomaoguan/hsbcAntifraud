@@ -59,7 +59,7 @@ public class AntifraudTest {
     @Test
     public void testIntegration1() throws Exception {
         antifraudService.init();
-        messagingController.start(mockUtils.mockHttpRequest());
+//        messagingController.start(mockUtils.mockHttpRequest());
 
         List<JSONObject> payloads = mockUtils.mockRealPayload();
 
@@ -83,6 +83,9 @@ public class AntifraudTest {
     @Test
     public void testIntegration2() throws Exception {
         antifraudService.init();
+        /**
+         * this node will consume messages if following opens
+         */
 //        messagingController.start(mockUtils.mockHttpRequest());
 
         List<JSONObject> payloads = mockUtils.mockRealPayload();
@@ -90,8 +93,6 @@ public class AntifraudTest {
         MNSClient mnsClient = mqService.acquireMqClient();
         try {
             CloudQueue cloudQueue = mnsClient.getQueueRef(mqService.getQueueName());
-
-            List<Message> messagesToPut = new ArrayList<>();
 
             for (int i = 0; i < payloads.size(); i++) {
                 cloudQueue.putMessage(mqService.constructMessage(payloads.get(i)));
