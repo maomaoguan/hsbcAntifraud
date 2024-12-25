@@ -24,6 +24,7 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * it is a message receiver that takes messaging as payload, which will be detected and giving antifraud feedback
@@ -44,6 +45,7 @@ public class MessagingController {
      * overall switch which controls the up or down running of consumers
      */
     private final AtomicBoolean isReceiving = new AtomicBoolean(false);
+    private final AtomicInteger threadsCounter = new AtomicInteger(0);
 
     @Value("${antifraud.queueName}")
     private String queueName;
@@ -94,6 +96,12 @@ public class MessagingController {
         this.kickoff();
     }
 
+
+    @GetMapping("/status")
+    public String status(HttpServletRequest request) {
+        return String.valueOf(String.format("pool:%s; counts:%s", this.basicThreadPool.isShutdown(), this.threadsCounter.get()));
+    }
+
     private void initiatePool() {
         if (basicThreadPool == null) {
             /**
@@ -105,12 +113,19 @@ public class MessagingController {
                     public Thread newThread(Runnable r) {
                         return new Thread(r, "MessagingController-" + r.hashCode());
                     }
-                });
+                }, new MessageRejectedExecutionHandler());
+
+                threadsCounter.set(0);
             }
         } else {
             if (!basicThreadPool.isShutdown()) {
                 log.info("[messaging] shutting down previous pool");
-                basicThreadPool.shutdown();
+                try {
+                    basicThreadPool.shutdown();
+                } catch (Exception ex) {
+                    log.error("[messaging] having issue to shutdown ", ex);
+                }
+
                 basicThreadPool = null;
                 synchronized (this.getClass()) {
                     basicThreadPool = new ThreadPoolExecutor(defaultCoreConsumers, consumerMax, 800L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(16), new ThreadFactory() {
@@ -118,10 +133,11 @@ public class MessagingController {
                         public Thread newThread(Runnable r) {
                             return new Thread(r, "MessagingController-" + r.hashCode());
                         }
-                    });
+                    }, new MessageRejectedExecutionHandler());
+
+                    threadsCounter.set(0);
                 }
             }
-
         }
     }
 
@@ -130,7 +146,7 @@ public class MessagingController {
          * fraud detected, giving feedback and warnings accordingly
          */
         if (CodeEnum.typeOf(antifraudResponse.getCode()) == CodeEnum.REJECTED) {
-            log.warn("[antifraud] FRAUD DETECTED!!! -  regarding account {} - hitting rule {}", antifraudResponse.getAccountId(), antifraudResponse.getDetails());
+            log.warn("[FRAUD] DETECTED!!! -  regarding account {} - hitting rule {}", antifraudResponse.getAccountId(), antifraudResponse.getDetails());
         }
     }
 
@@ -144,17 +160,39 @@ public class MessagingController {
         }
     }
 
-    private class MessageReceiveRunnable implements Runnable {
+    /**
+     * tier up the suspending period in multi-levels
+     *
+     * @param currentPeriod
+     * @return
+     */
+    private int tierUp(int currentPeriod) {
+        currentPeriod *= period;
 
+        if (currentPeriod > periodThreshold) {
+            currentPeriod = periodThreshold;
+        }
+
+        return currentPeriod;
+    }
+
+    private class MessageReceiveRunnable implements Runnable {
         @Override
         public void run() {
             MNSClient mnsClient = mqService.acquireMqClient();
+            threadsCounter.incrementAndGet();
 
             int currentPeriod = period;
             try {
                 CloudQueue cloudQueue = mnsClient.getQueueRef(queueName);
+
+                /**
+                 * continue to receive messages
+                 */
                 while (isReceiving.get()) {
                     Message message = null;
+                    boolean isMessageFailed = false;
+
                     try {
                         message = cloudQueue.popMessage(period);
                     }
@@ -164,32 +202,38 @@ public class MessagingController {
                         /**
                          * in a tier up way to add suspending time
                          */
-                        currentPeriod *= period;
-
-                        if (currentPeriod > periodThreshold) {
-                            currentPeriod = periodThreshold;
-                        }
-
-                        log.info("[messaging] sleeping {}", currentPeriod);
+                        currentPeriod = tierUp(currentPeriod);
 
                         try {
                             Thread.sleep(currentPeriod * 1000);
                         } catch (Exception ex2) {
                             /**
-                             * intentionally ignore
+                             * intentionally ignore interruptions
                              */
                         }
                     } catch (Exception ex) {
-                        log.error("[messaging] system failure ", ex);
+                        log.error("[messaging] message getting failure ", ex);
+                        isMessageFailed = true;
                     }
 
-                    if (message != null) {
+                    if (isMessageFailed) {
+                        /**
+                         * skip this message when receiving failure encountered instead of consuming it,
+                         * in multi-pods env, other pod will get chance to receive
+                         */
+                        continue;
+                    } else if (message != null) {
                         try {
                             AntifraudResponse antifraudResponse = antifraudService.process(message);
+
                             /**
-                             * successfully polling message
+                             * successfully polling message, consume it
                              */
                             cloudQueue.deleteMessage(message.getReceiptHandle());
+
+                            /**
+                             * alert & logs to fraud
+                             */
                             fraudRecognizing(antifraudResponse);
                         } catch (AntifraudException bizEx) {
                             log.error("[messaging] failed to process a message {} - details {}", bizEx.getCode(), bizEx.getMessage());
@@ -199,15 +243,15 @@ public class MessagingController {
                          * restore the period to suspend
                          */
                         currentPeriod = period;
-                    } else {
+                    }
+                    /**
+                     * out of messages
+                     */
+                    else {
                         /**
                          * in a tier up way to add suspending time
                          */
-                        currentPeriod *= period;
-
-                        if (currentPeriod > periodThreshold) {
-                            currentPeriod = periodThreshold;
-                        }
+                        currentPeriod = tierUp(currentPeriod);
 
                         log.info("[messaging] sleeping2 {}", currentPeriod);
 
@@ -221,12 +265,23 @@ public class MessagingController {
                     }
                 }
             } catch (Exception ex) {
-                log.error("[messaging] failed");
+                log.error("[messaging] failed unexpectedly ", ex);
             }
 
-            mnsClient.close();
+            if (mnsClient != null) {
+                mnsClient.close();
+            }
 
+            threadsCounter.decrementAndGet();
             log.error("[messaging] thread shutting down");
+        }
+    }
+
+
+    private class MessageRejectedExecutionHandler implements RejectedExecutionHandler {
+        @Override
+        public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
+            log.error("[messaging] fatal, thread {} is rejected ", r.toString());
         }
     }
 }

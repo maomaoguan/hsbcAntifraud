@@ -135,7 +135,7 @@ public class FeatureComputeServiceImpl implements FeatureComputeService {
     private class FeatureRejectedExecutionHandler implements RejectedExecutionHandler {
         @Override
         public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
-            log.warn("[featureservice.queryFeatures.reject2] fatal, thread {} is rejected ", r.toString());
+            log.error("[featureCompute] fatal, thread {} is rejected ", r.toString());
         }
     }
 }

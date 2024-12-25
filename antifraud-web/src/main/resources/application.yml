@@ -40,6 +40,7 @@ antifraud:
   queueName: antifraud
   accessKey: jhrpkZWwB07OOcIODDJJCULUbmD15N
   accessId: LTAI5t5rXruySp3XJaSNo5ng
-  periodThreshold: 32
+  periodThreshold: 64
   consumers: 2
   consumerMax: 8
+

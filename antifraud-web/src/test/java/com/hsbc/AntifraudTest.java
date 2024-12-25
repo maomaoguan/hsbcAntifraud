@@ -80,10 +80,10 @@ public class AntifraudTest {
      *
      * @throws Exception
      */
-//    @Test
+    @Test
     public void testIntegration2() throws Exception {
         antifraudService.init();
-        messagingController.start(mockUtils.mockHttpRequest());
+//        messagingController.start(mockUtils.mockHttpRequest());
 
         List<JSONObject> payloads = mockUtils.mockRealPayload();
 
@@ -99,7 +99,7 @@ public class AntifraudTest {
 
             mnsClient.close();
 
-            log.info("[testIntegration2] {} messages sent ", messagesToPut.size());
+            log.info("[testIntegration2] {} messages sent ", payloads.size());
         } catch (Exception ex) {
             log.error("[testSendingMsg] failed to send to endpoint ", ex);
         }
