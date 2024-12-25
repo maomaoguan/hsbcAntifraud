@@ -30,17 +30,24 @@ logging:
   file:
     path: ./antifraud_log
 
+# following are application specific configurations
 antifraud:
+  # supported rule names
   ruleNames: rule1, rule2, rule3
+  # supported feature names
   featureNames: xAmounts, xIllegalLogins, xLargeAmountCnts
+  # mocked account size
   accounts: 5
+  # the thread pool which locates in feature computing for parallel computing purpose
   coreSize: 16
   maxSize: 128
+  # mq related configurations
   endpoint: http://1712034974828389.mns.cn-hangzhou.aliyuncs.com
   queueName: antifraud
   accessKey: jhrpkZWwB07OOcIODDJJCULUbmD15N
   accessId: LTAI5t5rXruySp3XJaSNo5ng
   periodThreshold: 64
+  # concurrent consumers allowed which can consume message in concurrent way
   consumers: 2
   consumerMax: 8
 

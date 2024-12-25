@@ -10,20 +10,20 @@ refers to ![image](featuresDescription.png)
 * A data, which simulates and mocks data which will be used for feature computation
 * support for antifraud detecting & message processing, which process messages/payloads and gives fraud alert & logs 
 
-## assumptions
-certain assumptions are taken as below to simply situation or give a default solution giving this examination purpose
 
-* assume that rule and scenario are single to single relationship
-* assume single rule enough to detect fraud, otherwise it will involve flow engine which is out of the scope of this exam
-* assume data which used in feature/variable computing can be mocked, otherwise db or other storage will be involved 
-* assume that minimal configurations to rules/features are involved, otherwise system need to be separated into two sub-sytems, 1 console for configuration and 2 running engine for execution
-* assume that feature computing can be simplified
-* assume that fraud notifications/alerts can be simplified through log
-* assume that traffic can be sent through either local env or a node
+## deliverables announcements
+
+* source code is within
+* tests are under anitfraud-web/src/test; reports with coverage using maven can be generated and locate under antifraud-web/target/site/jacco-aggregate/index.html 
+* Kubernetes deployment file is under /Docker & /center.yaml; 
+* Documentation is as below mentioned, including functionality & architect docs; also some detailed tips are within code
+* Resilience test has to go over aliyun and give a manual demonstration, for example it needs to shutdown pod manually and check logs and mq see the processing which hasn't been jepardized
+
 
 ## arch & docs
 * logical arch regarding  ![image](hsbcAntifraudLogicArch.jpg)
 * a sequence diagram which demonstrates a major flow of execution   ![image](sequenceDiagram.jpg)
+* deployment arch   ![image](deploymentArch.png)
 
 ## code structure & modules
 
@@ -38,12 +38,15 @@ tests can be run in either idea or triggered by a maven build
 * FeatureTest
 * RuleTest
 * EnvTest, it is regarding environtment settings
-* MessagingTest, it is regarding messaging send & receiving to ali-cloud
+* MessagingTest, it is regarding messaging send & receiving to ali-cloud. 
 
 ### the integration test
 * AntifraudTest
   * testIntegration1 is an integration test in a non-message way, which can be run locally
   * testIntegration2 is an integration test in a message way, which is sent to mq and all nodes can consume messages and do fraud detects
+
+mocked traffics locate in this test
+
 
 ### test report and coverage
  - this project uses surefire and jacco, in which test results will be output under antifraud-web/target/site/jacco-aggregate/index.html
@@ -98,3 +101,16 @@ in order to run this u need to have following criteria
 - jdk8 
 - maven 
 - springboot
+
+
+
+## assumptions
+certain assumptions are taken as below to simply situation or give a default solution giving this examination purpose
+
+* assume that rule and scenario are single to single relationship
+* assume single rule enough to detect fraud, otherwise it will involve flow engine which is out of the scope of this exam
+* assume data which used in feature/variable computing can be mocked, otherwise db or other storage will be involved
+* assume that minimal configurations to rules/features are involved, otherwise system need to be separated into two sub-sytems, 1 console for configuration and 2 running engine for execution
+* assume that feature computing can be simplified
+* assume that fraud notifications/alerts can be simplified through log
+* assume that traffic can be sent through either local env or a node
