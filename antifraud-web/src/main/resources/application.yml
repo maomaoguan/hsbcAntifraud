@@ -11,8 +11,8 @@ server:
 
 spring:
   profiles:
-    #active: prod
-    active: dev
+    active: prod
+    #active: dev
 
   application:
     name: antifraud-web
@@ -40,14 +40,13 @@ antifraud:
   accounts: 5
   # the thread pool which locates in feature computing for parallel computing purpose
   coreSize: 16
-  maxSize: 128
+  maxSize: 256
   # mq related configurations
   endpoint: http://1712034974828389.mns.cn-hangzhou.aliyuncs.com
   queueName: antifraud
   accessKey: jhrpkZWwB07OOcIODDJJCULUbmD15N
   accessId: LTAI5t5rXruySp3XJaSNo5ng
-  periodThreshold: 64
+  periodThreshold: 256
   # concurrent consumers allowed which can consume message in concurrent way
   consumers: 2
   consumerMax: 8
-

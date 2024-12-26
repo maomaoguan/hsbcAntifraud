@@ -42,7 +42,7 @@ tests can be run in either idea or triggered by a maven build
 
 ### the integration test
 * AntifraudTest
-  * testIntegration1 is an integration test in a non-message way, which can be run locally
+  * testIntegration1 is an integration test in a non-message way, which can be run locally and detection will be alerted through console
   * testIntegration2 is an integration test in a message way, which is sent to mq and all nodes can consume messages and do fraud detects
 
 mocked traffics locate in this test

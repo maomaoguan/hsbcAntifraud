@@ -45,7 +45,7 @@ public class MessagingController {
     /**
      * overall switch which controls the up or down running of consumers
      */
-    private final AtomicBoolean isReceiving = new AtomicBoolean(false);
+    private final AtomicBoolean isReceiving = new AtomicBoolean(true);
     private final AtomicInteger threadsCounter = new AtomicInteger(0);
 
     @Value("${antifraud.queueName}")

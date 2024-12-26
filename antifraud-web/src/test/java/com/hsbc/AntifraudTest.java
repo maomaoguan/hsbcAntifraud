@@ -89,7 +89,7 @@ public class AntifraudTest {
         /**
          * this node will consume messages if following opens
          */
-//        messagingController.start(mockUtils.mockHttpRequest());
+        messagingController.start(mockUtils.mockHttpRequest());
 
         List<JSONObject> payloads = mockUtils.mockRealPayload();
 
