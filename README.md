@@ -34,6 +34,9 @@ refers to ![image](featuresDescription.png)
 all tests are under antifraud-web/src/test/java/...; 
 tests can be run in either idea or triggered by a maven build
 
+* NOTED, to make test running locally, spring.profiles.active shall be set to dev, which is located antifraud-web/src/main/resources/application.yml 
+  - active: dev
+
 ### the unit test regarding each major feature and modules
 * FeatureTest
 * RuleTest
